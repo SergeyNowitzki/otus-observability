@@ -1,0 +1,21 @@
+namespace: my_namespace
+groups:
+  - name: example
+    interval: 5m
+    rules:
+      - alert: AlwaysFiring
+        expr: vector(1)
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "This alert is always firing"
+          description: "Used to test Mimir alerting setup"
+      - alert: HttpInprogressTooHigh
+        expr: sum by (job) (http_inprogress_requests) > 100
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Too many in-progress HTTP requests"
+          description: "More than 100 HTTP requests in progress for job {{ $labels.job }}"

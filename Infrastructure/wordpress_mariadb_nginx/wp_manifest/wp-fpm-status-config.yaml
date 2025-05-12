@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wp-fpm-status
+data:
+  zz-status.conf: |
+    [www]
+    pm.status_path = /status
+    ping.path      = /ping

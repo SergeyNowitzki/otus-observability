@@ -1,0 +1,46 @@
+# No need for ServiceMonitor with standard Prometheus
+serviceMonitor:
+  enabled: false
+
+mysql:
+  host: "mariadb"
+  port: 3306
+  user: "root"
+  pass: "rootpassword"
+
+# Configure the exporter service
+service:
+  type: ClusterIP
+  port: 9104
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
+
+# Resource limits
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+
+# Configure logging
+config:
+  logLevel: info
+
+
+collectors:
+  global_status: true
+  global_variables: true
+  info_schema.tables: true
+  info_schema.innodb_metrics: true
+  info_schema.processlist: true
+  perf_schema.eventsstatements: true
+  perf_schema.eventswaits: true
+  slave_status: true
+  info_schema.userstats: true
+  info_schema.tablestats: true
+  info_schema.innodb_cmp: true
+  info_schema.innodb_cmpmem: true

@@ -1,0 +1,90 @@
+global:
+  # -- Definitions to set up nginx resolver
+  dnsService: coredns
+  dnsNamespace: kube-system
+  clusterDomain: cluster.local
+
+mimir:
+  structuredConfig:
+    limits:
+    # Delete from storage metrics data older than 14 days.
+      compactor_blocks_retention_period: 14d
+
+query_scheduler:
+  replicas: 1 # Modify Number of replicas if you want, The default number of replicas for the query_scheduler is 2
+querier:
+  replicas: 1 # Modify Number of replicas if you want, The default number of replicas for the querier is 2
+
+alertmanager:
+  fallbackConfig: |
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      repeat_interval: 1h
+      group_wait: 30s
+      group_interval: 5m
+      receiver: 'slack-notifications'
+      routes:
+        - matchers:
+            - severity="critical"
+          receiver: slack-notifications
+        - matchers:
+            - severity="warning"
+          receiver: telegram-notifications
+    receivers:
+    - name: 'slack-notifications'
+      slack_configs:
+      - send_resolved: true
+        channel: "#alertmanager"
+        api_url: "https://hooks.slack.com/services/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"
+        title: "{{ range .Alerts }}{{ .Annotations.summary }}\n{{ end }}"
+        text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"
+    - name: 'telegram-notifications'
+      telegram_configs:
+      - chat_id: -4602888673
+        parse_mode: 'Markdown'
+        bot_token: '7256663290:AAEonysNBZUL2dNiNh0k_mZMrGTizqcUgpk'
+  persistentVolume:
+    storageClass: standard # Choose the storageClass you wanna use
+
+ingester:
+  zoneAwareReplication: # zone-aware replication is the replication of data across failure domains, Enable it if you want to use it, https://grafana.com/docs/mimir/latest/configure/configure-zone-aware-replication/
+    enabled: false
+  persistentVolume:
+    storageClass: local-path
+    size: 1Gi
+store_gateway:
+  zoneAwareReplication: # zone-aware replication is the replication of data across failure domains, Enable it if you want to use it, https://grafana.com/docs/mimir/latest/configure/configure-zone-aware-replication/
+    enabled: false
+  persistentVolume:
+    storageClass: local-path # Choose the storageClass you wanna use
+    size: 1Gi
+compactor:
+  persistentVolume:
+    storageClass: local-path # Choose the storageClass you wanna use
+    size: 1Gi
+minio:
+  enabled: false # Mimir helm chart deploys minio by default, if you prefer to use your own mimio instance, disable it as i did
+mimir:
+  structuredConfig:
+    common:
+      storage:
+        backend: s3
+        s3:
+          access_key_id: EzzKPQQ6n9sxuiMW7C5F
+          bucket_name: mimir-ruler
+          endpoint: minio.default.svc.cluster.local:9000
+          insecure: true
+          secret_access_key: pPDgJ4fnLLdfqe7lavI0VPWs0OwYFk9MfanI5MQf
+    blocks_storage:
+      s3:
+        bucket_name: mimir-tsdb
+
+    alertmanager_storage:
+      s3:
+        bucket_name: mimir-ruler
+
+    ruler_storage:
+      s3:
+        bucket_name: mimir-ruler

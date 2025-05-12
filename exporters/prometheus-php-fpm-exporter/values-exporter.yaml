@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: hipages/php-fpm_exporter
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+
+phpFpm:
+  webTelemetryPath: "/metrics"
+  scrapeUri: "tcp://wordpress.default.svc.cluster.local:9000/status"
+
+service:
+  type: ClusterIP
+  internalPort: 9253
+  externalPort: 9253

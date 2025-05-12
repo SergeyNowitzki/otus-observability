@@ -1,0 +1,44 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # Base VM OS configuration.
+  config.vm.box = "ubuntu/focal64"
+  config.vm.box_check_update = false
+  config.vm.provider :virtualbox do |v|
+    v.memory = 5120
+    v. cpus = 4
+  end
+
+
+  # Define VMs with static private IP addresses.
+  boxes = [
+    {
+      :name => "node1",
+      :ip => "192.168.99.211",
+    },
+    {
+      :name => "node2",
+      :ip => "192.168.99.212",
+    },
+    {
+      :name => "node3",
+      :ip => "192.168.99.213",
+    }
+  ]
+
+  # Provision each of the VMs.
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.hostname = opts[:name]
+      config.vm.network "private_network", ip: opts[:ip]
+      config.vm.provision "shell", inline: <<-SHELL
+        echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCeAb+oHb697nQo3jbOfY+fVN7ky6Hfc/x93rhUOf6Skb3JMOdCAsqNol2mVNUSWKdX+T67lD1s5G/aFPXoR9EEJz0FSTlCNg/TCLtlWu5WINRS4tPRRWQosA8uia7ni9ZcFcbrsL8VcE4S9rxtzAddsbR6KK+zSWzpHaJ/NFeBajC7/slA5ejtZJe5V1qOwwQ9MCjRi6/u+nbCBxRpEBD5svvnpqCF3l4vpRd9dRwpNtjDC2zb/hyRFBzeX076Ou6PN3NT3sy57aKEI589ZLKxTZQKw8bwPoPleCxItx3ENyD+6YBTuA+X1o05VLK9NyWa1/ZP5y0+N1Bg/0BY+2TwNkwJuEO4koZ3g/1va8yNg5xeAh0giYjoheHq8EhdD+UFDNcrarnpvmjrFM9OS/rxBdfj1i0xUTZPxVj/tNZ0wYTxpAPQhX/D5NxosfIKQsx0Ehhgita8La/GxLaEeW+yPb4hbf7hW5eXntqRch3nAATALKwLlfqctvFzyW+fkT+Tmi5Y7EI8mjcdZ0Ils0NpIvt5AJECWLiZjobBV3LWpJ0xrIiYGhx0lHYE9ekjkiHZ30NieLLBnZZbMe2BHqfNflinOH9sYfOujzfhByr6oy/YXiQdM1rrPQJ9405DrcMeLY8TRASVC120K6AiyozLlCa+Y/MhcLcVhJsY3QBCIQ== sergeynowitzki@gmail.com" >> /home/vagrant/.ssh/authorized_keys
+        sudo apt-get update
+        sudo apt install -y python3 python3-pip
+        sudo swapoff -a
+        sudo sed -i '/ swap / s/^/#/' /etc/fstab
+      SHELL
+      end
+    end
+  end

@@ -1,0 +1,69 @@
+serviceMonitor:
+  enabled: false
+
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9115"
+
+# Configure modules for different types of checks
+config:
+  modules:
+    http_2xx:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        valid_status_codes: [200]
+        method: GET
+        no_follow_redirects: false
+        fail_if_ssl: false
+        fail_if_not_ssl: false
+        preferred_ip_protocol: "ip4"
+    http_post_2xx:
+      prober: http
+      timeout: 5s
+      http:
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        method: POST
+        preferred_ip_protocol: "ip4"
+    tcp_connect:
+      prober: tcp
+      timeout: 5s
+      tcp:
+        preferred_ip_protocol: "ip4"
+    icmp:
+      prober: icmp
+      timeout: 5s
+      icmp:
+        preferred_ip_protocol: "ip4"
+
+# Define additional targets to probe
+additionalScrapeConfigs:
+  - job_name: 'blackbox-cms'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Use the http_2xx module defined above
+    static_configs:
+      - targets:
+        # Replace these with your actual CMS URLs
+        - https://google.com
+        - http://wordpress.local
+        - http://grafana.local
+        - http://prometheus.local
+        - http://minio.local
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-prometheus-blackbox-exporter:9115
+
+hostAliases:
+  - ip: "192.168.99.200"
+    hostNames:
+      - "wordpress.local"
+      - "prometheus.local"
+      - "grafana.local"
+      - "minio.local"

@@ -1,0 +1,13 @@
+namespace: app
+groups:
+  - name: phpfpm
+    interval: 5m
+    rules:
+      - alert: PHPFPMDown
+        expr: phpfpm_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: PHP-FPM exporter is down
+          description: "The PHP-FPM exporter is not responding on {{ $labels.instance }} for at least 2 minutes."
