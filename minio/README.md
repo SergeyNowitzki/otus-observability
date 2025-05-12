@@ -18,3 +18,5 @@ awscli should be installed to connect to minio s3:
 aws s3 ls --profile mimir --endpoint=http://minio.local/
 2025-04-27 23:06:37 mimir-ruler
 2025-04-27 23:06:57 mimir-tsdb
+
+<img width="1756" alt="image" src="https://github.com/user-attachments/assets/44ce01fe-8258-48c0-b8bd-ed97f400f501" />
