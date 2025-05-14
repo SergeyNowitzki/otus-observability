@@ -187,6 +187,10 @@ The **WordPress** setup includes:
 - Nginx as a web server and reverse proxy
 - Persistent storage for both database and WordPress files
 
+In `nginx.yaml` configuration file `location /stub_status` is used to expose metrics for NGINX.
+If any changes in the config has to be applied, the `kubectl apply -f nginx.yaml` command should be used.
+To reload the NGINX pods and apply the config: `kubectl rollout restart deployment nginx`
+
 ## Network Configuration
 ### MetalLB Load Balancer
 A LoadBalancer service for Ingress controller (MetalLB).
