@@ -141,18 +141,26 @@ Mimir includes a built-in Alertmanager that can centralize all alerting. To use 
 1. Disable the Grafana built-in Alertmanager
 2. Configure only Mimir Alertmanager
 
+![image](https://github.com/user-attachments/assets/ce51c69b-8208-4d48-883f-be5b5e813e1c)
+
+![image](https://github.com/user-attachments/assets/c5450b9f-cab1-4773-b2ff-d1197103fe32)
+
+
 ### Slack Alerts Configuration
 https://grafana.com/blog/2020/02/25/step-by-step-guide-to-setting-up-prometheus-alertmanager-with-slack-pagerduty-and-gmail/
 1. Create a Slack webhook:
    - Go to Slack → Administration → Manage apps
    - Search for "Incoming WebHooks" and add it to your workspace
    - Copy the webhook URL
+
 2. Test the webhook:
 ```bash
 curl -X POST -H 'Content-type: application/json' \
      --data '{"text": "Hello, World!"}' \
      https://hooks.slack.com/services/YOUR_WEBHOOK_PATH
 ```
+![image](https://github.com/user-attachments/assets/2b1b614c-f78e-418e-9e97-8cac71226fc9)
+
 3. Configure Alertmanager in `mimir-distributed-values.yml`:
 ```yaml
 alertmanager:
@@ -196,6 +204,9 @@ To recieve alerts with a severity 'warnings' in telegram we should create a bot 
         bot_token: 'Bot_Token'
 ```
 
+![image](https://github.com/user-attachments/assets/0157d2bc-ee43-45b5-bdb3-6dd5eefd354b)
+
+
 ## Working with Mimir Rules
 Mimir supports Prometheus-compatible alerting and recording rules.
 **Mimirtools** is used to manage Mimir rules: https://grafana.com/docs/mimir/latest/manage/tools/mimirtool/
@@ -207,6 +218,9 @@ The Rules are classified by the following criteria:
 - `example_rules_one.yaml` - Example alerts always firing
 - `hardware_alert_rules.yaml` - Hardware alerts describing hardware metrics
 - `kubernetes_alert_rules.yaml` - Kubernetes alerts
+
+![image](https://github.com/user-attachments/assets/d14358b9-dd16-46f8-86fe-a9ab99cd8bf2)
+
 
 1. Spin up a pod to run the `mimirtool` command:
 ```bash
