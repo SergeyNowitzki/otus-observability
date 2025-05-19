@@ -98,6 +98,9 @@ These dashboards can be customized to suit your specific monitoring needs:
 - Add or remove panels as needed
 - Modify queries to include additional metrics or filters
 
+### Drilldown Dashboards Summary
+![image](https://github.com/user-attachments/assets/1b01be8b-fb9e-4c4e-afa9-1427663f0975)
+
 ## Dashboard Sources
 
 These dashboards are based on or inspired by:
