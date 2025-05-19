@@ -243,6 +243,35 @@ chmod +x mimirtool
 5. View current rules:
 ```bash
 curl -s -H "X-Scope-OrgID: prod" http://mimir-ruler.mimir.svc.cluster.local:8080/prometheus/api/v1/rules | jq
+{
+  "status": "success",
+  "data": {
+    "groups": [
+      {
+        "name": "example",
+        "file": "my_namespace",
+        "rules": [
+          {
+            "name": "job:http_inprogress_requests:sum",
+            "query": "sum by (job) (http_inprogress_requests)",
+            "labels": {},
+            "health": "ok",
+            "lastError": "",
+            "type": "recording",
+            "lastEvaluation": "2025-05-03T00:20:26.835535222Z",
+            "evaluationTime": 0.00674672
+          }
+        ],
+        "interval": 300,
+        "lastEvaluation": "2025-05-03T00:20:26.835462589Z",
+        "evaluationTime": 0.006834254,
+        "sourceTenants": null
+      }
+    ]
+  },
+  "errorType": "",
+  "error": ""
+}
 ```
 
 ## ### S3 Storage Structure
